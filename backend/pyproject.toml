@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=73", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "miniharness2"
+version = "0.1.0"
+description = "Readable local coding harness with transactional runs"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115,<1", "uvicorn[standard]>=0.32,<1",
+  "pydantic-settings>=2.9,<3", "sqlalchemy[asyncio]>=2.0,<3",
+  "psycopg[binary,pool]>=3.2,<4", "alembic>=1.15,<2", "pgvector>=0.4,<1",
+  "langchain[mcp]>=1.4,<2", "langchain-openai>=1,<2",
+  "langgraph>=1,<2", "langgraph-checkpoint-postgres>=3,<4",
+  "tiktoken>=0.8,<1", "PyYAML>=6,<7", "psutil>=6,<8",
+  "pytest>=8,<10",
+]
+
+[project.optional-dependencies]
+local-embeddings = ["onnxruntime>=1.20,<2", "tokenizers>=0.20,<1", "numpy>=1.26,<3"]
+dev = ["pytest-asyncio>=1,<2", "ruff>=0.12,<1", "httpx>=0.28,<1"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = ["integration: requires a dedicated PostgreSQL + pgvector test database"]
+testpaths = ["tests"]
+addopts = "--basetemp=.pytest-tmp"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+ignore = ["E501"]
